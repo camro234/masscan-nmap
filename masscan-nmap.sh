@@ -33,6 +33,7 @@ echo -e "\nStarting Nmap ALL port fast scan (\e[0;92mINFO\e[0m)\n"
 # run nmap against the target IP's in file, specifying the ports 
 # that were discovered port by masscan for further interrogation
 nmap -vvv -e $INTERFACE -iL $IP_FILE -p- --min-rate 10000 -oA $OUTDIR/nm_fastports.out
+nmap -vvv -e $INTERFACE -iL $IP_FILE -p- --min-rate 10000 -oA $OUTDIR/nm_fastports2.out
 
 # filter masscan output for discovered ports
 grep 'Host' $OUTDIR/masscan.out | \
@@ -44,6 +45,7 @@ grep 'Host' $OUTDIR/masscan.out | \
 
 # add nmap fastports result to discovered ports
 grep 'open' $OUTDIR/nm_fastports.out.nmap | awk '{print $1}' | tr -d '/tcp' | tr -d '/udp' >> $OUTDIR/ports_part.out
+grep 'open' $OUTDIR/nm_fastports2.out.nmap | awk '{print $1}' | tr -d '/tcp' | tr -d '/udp' >> $OUTDIR/ports_part.out
 
 # create consolidated list
 cat $OUTDIR/ports_part.out | sort -n | uniq | tr '\n' ',' | sed 's/,$//' > $OUTDIR/ports
@@ -51,13 +53,16 @@ cat $OUTDIR/ports_part.out | sort -n | uniq | tr '\n' ',' | sed 's/,$//' > $OUTD
 echo -e "\nStarting Nmap scan (\e[0;92mINFO\e[0m)\n"
 # run nmap against the target IP's in file, specifying the ports 
 # that were discovered port by masscan for further interrogation
-nmap -v -e $INTERFACE -iL $IP_FILE -p $(cat $OUTDIR/ports) -A -Pn --open -sC -sV -oA $OUTDIR/nmap-$(date '+%Y%m%d%H%M')
+nmap -v -e $INTERFACE -iL $IP_FILE -p $(cat $OUTDIR/ports) -Pn --open -sC -sV -oA $OUTDIR/nmap-$(date '+%Y%m%d%H%M')
 
-echo -e "\nStarting Nmap vuln scan (\e[0;92mINFO\e[0m)\n"
+echo -e "\nUDP Nmap scan (\e[0;92mINFO\e[0m)\n"
+# run nmap against UDP and see if anything interesting there
+nmap -e $INTERFACE -iL $IP_FILE -sU --top-ports 10 -sV -oA $OUTDIR/nmap-udp-$(date '+%Y%m%d%H%M')
+
+# echo -e "\nStarting Nmap vuln scan (\e[0;92mINFO\e[0m)\n"
 # run nmap against the target IP's in file, specifying the ports 
 # that were discovered port by masscan for further interrogation
-nmap -vvv -e $INTERFACE -iL $IP_FILE -p $(cat $OUTDIR/ports) --script=vuln -oA $OUTDIR/nmap-vuln-$(date '+%Y%m%d%H%M')
-
+# nmap -vvv -e $INTERFACE -iL $IP_FILE -p $(cat $OUTDIR/ports) --script=vuln -oA $OUTDIR/nmap-vuln-$(date '+%Y%m%d%H%M')
 
 echo -e "\nStarting Nmap ALL port scan (\e[0;92mINFO\e[0m)\n"
 # run nmap against the target IP's in file, specifying the ports 
