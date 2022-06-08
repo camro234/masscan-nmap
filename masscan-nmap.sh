@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 INTERFACE=$1
 IP_FILE=$2
