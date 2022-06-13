@@ -59,15 +59,15 @@ echo -e "\nUDP Nmap scan (\e[0;92mINFO\e[0m)\n"
 # run nmap against UDP and see if anything interesting there
 nmap -e $INTERFACE -iL $IP_FILE -sU --top-ports 10 -sV -oA $OUTDIR/nmap-udp-$(date '+%Y%m%d%H%M')
 
-# echo -e "\nStarting Nmap vuln scan (\e[0;92mINFO\e[0m)\n"
+echo -e "\nStarting Nmap vuln scan (\e[0;92mINFO\e[0m)\n"
 # run nmap against the target IP's in file, specifying the ports 
 # that were discovered port by masscan for further interrogation
-# nmap -vvv -e $INTERFACE -iL $IP_FILE -p $(cat $OUTDIR/ports) --script=vuln -oA $OUTDIR/nmap-vuln-$(date '+%Y%m%d%H%M')
+nmap -vvv -e $INTERFACE -iL $IP_FILE -p $(cat $OUTDIR/ports) --script=vuln -oA $OUTDIR/nmap-vuln-$(date '+%Y%m%d%H%M')
 
-echo -e "\nStarting Nmap ALL port scan (\e[0;92mINFO\e[0m)\n"
+# echo -e "\nStarting Nmap ALL port scan (\e[0;92mINFO\e[0m)\n"
 # run nmap against the target IP's in file, specifying the ports 
 # that were discovered port by masscan for further interrogation
-nmap -vvv -e $INTERFACE -iL $IP_FILE -p- -sC -sV -oA $OUTDIR/nmap-all-$(date '+%Y%m%d%H%M')
+# nmap -vvv -e $INTERFACE -iL $IP_FILE -p- -sC -sV -oA $OUTDIR/nmap-all-$(date '+%Y%m%d%H%M')
 
 echo -e "\nScans are complete (\e[0;97mATTENTION\e[0m)"
 
